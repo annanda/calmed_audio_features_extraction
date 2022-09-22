@@ -7,3 +7,5 @@
 *.idea
 docker-compose.override.yml
 /raw_files/*
+/annotation_files/*
+/output_opensmile/*
