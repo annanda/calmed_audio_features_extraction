@@ -7,6 +7,7 @@ services:
       dockerfile: 'Dockerfile'
     volumes:
       - ./raw_files:/app/raw_files
+      - ./output_opensmile:/app/output_opensmile
       - ./audio_features_extraction/testing.py:/app/audio_features_extraction/testing.py
       - ./audio_features_extraction/conf.py:/app/audio_features_extraction/conf.py
     working_dir: /app/audio_features_extraction
