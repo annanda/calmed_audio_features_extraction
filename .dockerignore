@@ -1,2 +1,5 @@
 .git/*
 raw_files/*
+output_opensmile/*
+annotation_files/*
+audio_features_study/*

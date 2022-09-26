@@ -8,7 +8,9 @@ services:
     volumes:
       - ./raw_files:/app/raw_files
       - ./output_opensmile:/app/output_opensmile
+      - ./annotation_files:/app/annotation_files
       - ./audio_features_extraction/testing.py:/app/audio_features_extraction/testing.py
+      - ./audio_features_extraction/build_audio_features_dataset.py:/app/audio_features_extraction/build_audio_features_dataset.py
       - ./audio_features_extraction/conf.py:/app/audio_features_extraction/conf.py
     working_dir: /app/audio_features_extraction
     entrypoint: /bin/sh -c

@@ -2,7 +2,7 @@ import os.path
 
 import pandas as pd
 import opensmile
-from audio_features_extraction.conf import ANNOTATION_FILES_FOLDER
+from audio_features_extraction.conf import ANNOTATION_FILES_FOLDER, MAIN_FOLDER, RAW_FILES_FOLDER
 
 
 class AudioFeaturesExtraction:
@@ -11,6 +11,7 @@ class AudioFeaturesExtraction:
         self.session = session
         self.parts_of_a_session = ['session_01_01_01']
         self.session_annotation_folder = os.path.join(ANNOTATION_FILES_FOLDER, self.session)
+        self.output_folder = os.path.join(MAIN_FOLDER, 'output_opensmile', self.session)
         self.smile = opensmile.Smile(
             feature_set=opensmile.FeatureSet.eGeMAPSv02,
             feature_level=opensmile.FeatureLevel.Functionals,
@@ -20,10 +21,18 @@ class AudioFeaturesExtraction:
         """ For each file of a given session, I need to create the audio working dataset of features
         """
         for part in self.parts_of_a_session:
-            df_audio_features_per_part = None  # Create a dataframe and make intervals list a column with the values there to populate later with the features
             intervals = self.build_intervals_list(part)
+            df_audio_features_per_part = pd.DataFrame(intervals, columns=['frametime'])
+            features_dfs = []
             for interval in intervals:
-                features = self.extract_audio_features(part + '.wav', interval, interval + 0.2)
+                path_audio = os.path.join(RAW_FILES_FOLDER, self.session, part + '.wav')
+                features = self.extract_audio_features(path_audio, interval, interval + 0.2)
+                features['frametime'] = interval
+                features_dfs.append(features)
+            # features.to_csv(os.path.join(MAIN_FOLDER, 'output_opensmile', f'result_features_{part}_{interval}.csv'))
+            features_from_part = pd.concat(features_dfs)
+            merged = df_audio_features_per_part.merge(features_from_part, on='frametime', how='outer')
+            merged.to_csv(os.path.join(self.output_folder, f'{part}.csv'))
 
     def build_intervals_list(self, annotation_file):
         annotation_df = pd.read_csv(os.path.join(self.session_annotation_folder, annotation_file + '.csv'))
@@ -31,6 +40,10 @@ class AudioFeaturesExtraction:
         return lst_intervals
 
     def extract_audio_features(self, file, start, end):
+        print(f'Calling OpenSMILE for {file}. From: {start} - to: {end}')
+        print('.')
+        print('.')
+        print('.')
         time_window_features = self.smile.process_file(file,
                                                        start=start,
                                                        end=end)
