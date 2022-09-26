@@ -7,13 +7,13 @@ from audio_features_extraction.conf import ANNOTATION_FILES_FOLDER, MAIN_FOLDER,
 
 class AudioFeaturesExtraction:
 
-    def __init__(self, session):
+    def __init__(self, session, parts_of_a_session):
         self.session = session
-        self.parts_of_a_session = ['session_01_01_01']
+        self.parts_of_a_session = parts_of_a_session
         self.session_annotation_folder = os.path.join(ANNOTATION_FILES_FOLDER, self.session)
         self.output_folder = os.path.join(MAIN_FOLDER, 'output_opensmile', self.session)
         self.smile = opensmile.Smile(
-            feature_set=opensmile.FeatureSet.eGeMAPSv02,
+            feature_set=opensmile.FeatureSet.ComParE_2016,
             feature_level=opensmile.FeatureLevel.Functionals,
         )
 
@@ -26,13 +26,14 @@ class AudioFeaturesExtraction:
             features_dfs = []
             for interval in intervals:
                 path_audio = os.path.join(RAW_FILES_FOLDER, self.session, part + '.wav')
-                features = self.extract_audio_features(path_audio, interval, interval + 0.2)
+                final_interval = interval + 0.2
+                features = self.extract_audio_features(path_audio, interval, final_interval)
                 features['frametime'] = interval
                 features_dfs.append(features)
             # features.to_csv(os.path.join(MAIN_FOLDER, 'output_opensmile', f'result_features_{part}_{interval}.csv'))
             features_from_part = pd.concat(features_dfs)
             merged = df_audio_features_per_part.merge(features_from_part, on='frametime', how='outer')
-            merged.to_csv(os.path.join(self.output_folder, f'{part}.csv'))
+            merged.to_csv(os.path.join(self.output_folder, f'{part}--testing.csv'))
 
     def build_intervals_list(self, annotation_file):
         annotation_df = pd.read_csv(os.path.join(self.session_annotation_folder, annotation_file + '.csv'))
@@ -51,6 +52,7 @@ class AudioFeaturesExtraction:
 
 
 if __name__ == '__main__':
-    audio_features = AudioFeaturesExtraction(session='session_01_01')
+    parts_session = ['session_01_01_01', 'session_01_01_02', 'session_01_01_03']
+    audio_features = AudioFeaturesExtraction('session_01_01', parts_session)
     audio_features.build_dataset()
     print('hi')
