@@ -52,12 +52,12 @@ class AudioFeaturesExtraction:
 
 
 if __name__ == '__main__':
-    parts_session = ['session_02_01_01',
-                     'session_02_01_02',
-                     'session_02_01_03',
-                     'session_02_01_04',
-                     'session_02_01_05',
-                     'session_02_01_06']
-    audio_features = AudioFeaturesExtraction('session_02_01', parts_session)
+    parts_session = ['session_03_02_01',
+                     'session_03_02_02',
+                     'session_03_02_03',
+                     'session_03_02_04',
+                     'session_03_02_05',
+                     'session_03_02_06']
+    audio_features = AudioFeaturesExtraction('session_03_02', parts_session)
     audio_features.build_dataset()
     # print('hi')
