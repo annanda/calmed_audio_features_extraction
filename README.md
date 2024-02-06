@@ -9,7 +9,7 @@ the [3-Cause BSD Licence](https://opensource.org/license/bsd-3-clause/).
 
 Please refer to [LICENSE.md](LICENSE.md) file for details on the licence.
 
-You must comply with OpenSMILE license.
+You must comply with the OpenSMILE license.
 
 ----
 
